@@ -1,0 +1,101 @@
+---
+title: "Basic Inferential Data Analysis"
+author: "Khoa Tran"
+date: "04/08/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Overview
+
+In the second part, we are going to explore the ToothGrowth dataset and use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose.
+
+## Part 2
+
+Load the needed library
+```{r}
+library(ggplot2)
+```
+
+In this second part, we will work with the ToothGrowth dataset
+```{r}
+str(ToothGrowth)
+
+ggplot(ToothGrowth, aes(dose,len)) + geom_point(aes(col = supp))
+```
+
+As the can see, there seem to be differences between 2 type of supplementary at different dose level. We will perform hypothesis tests to confirm this.
+
+
+```{r}
+OJ <- subset(ToothGrowth, supp == "OJ")
+VC <- subset(ToothGrowth, supp == "VC")
+
+```
+
+#### OJ vs VC at the 0.5 dose level
+
+```{r}
+OJ_0.5 <- subset(OJ, dose == 0.5)
+VC_0.5 <- subset(VC,dose == 0.5)
+```
+
+First we let check the len firgure has the same variance or not
+```{r}
+sd(OJ_0.5$len)^2 / sd(VC_0.5$len)^2
+```
+As this is about 2.6 we can asume that they do not have the same variance
+
+Perform the t-test
+```{r}
+t.test(OJ_0.5$len,VC_0.5$len,paired = FALSE, var.equal = FALSE ,alternative = "greater")
+```
+As the p-values is 0.003179 is lower that our significant level 0.05 . Therefore , we can reject the null hypothesis. And it is very likely that OJ at this dose level is more effective that VC
+
+#### OJ vs VC at the 1 dose level
+
+```{r}
+OJ_1 <- subset(OJ, dose == 1)
+VC_1 <- subset(VC,dose == 1)
+```
+
+First we let check the len firgure has the same variance or not
+```{r}
+sd(OJ_1$len)^2 / sd(VC_1$len)^2
+```
+As this is about 2.4 we can asume that they do not have the same variance
+
+Perform the t-test
+```{r}
+t.test(OJ_1$len,VC_1$len,paired = FALSE, var.equal = FALSE, alternative = "greater")
+```
+As the p-values is 0.0005192 is lower that our significant level 0.05 . Therefore , we can reject the null hypothesis. And it is very likely that OJ at this dose level is more effective that VC
+
+#### OJ vs VC at the 2 dose level
+
+```{r}
+OJ_2 <- subset(OJ, dose == 2)
+VC_2 <- subset(VC,dose == 2)
+```
+
+First we let check the len firgure has the same variance or not
+```{r}
+sd(OJ_2$len)^2 / sd(VC_2$len)^2
+```
+As this is about 0.3062501 we can asume that the tooth growth rate is this level have same variance
+
+Perform the t-test
+```{r}
+t.test(OJ_2$len,VC_2$len,paired = FALSE, var.equal = TRUE, alternative = "greater")
+```
+As the p-values is 0.5181 is larger that our significant level 0.05 . Therefore , we are fail to reject the null hypothesis. 
+
+### Conclusion
+In the first 2 dose level, 0.5 and 1, there are a reasonable evidence to state that the OJ help to growth better than VC. However, at the 2 dose level, there are not enough evidence to conclude the samething, and we have to assume there are no difference between them.
+
+### Assumptions
+- The data is collect randomly without any bias
+- The data is independence with the sample size < 10% of the population
+- The parent population is normally distributed

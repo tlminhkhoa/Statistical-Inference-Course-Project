@@ -1,0 +1,54 @@
+---
+title: "Statistical Inference Course Project"
+author: "Khoa Tran"
+date: "03/08/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+In first part of this report we going to explore the Central Limit Theorem vie simulation. Specifically, how exponential distribution statistical figures can be estimated by using 1000 simulation each with 40 exponentials each.In the second part, we are going to explore the ToothGrowth dataset and use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose.
+
+Load the needed library
+```{r}
+library(ggplot2)
+```
+
+
+## Part 1 
+
+### Simulations
+We simulate the exponential distribution with a 1000 x 40 matrix, 1000 sample with 40 values each  
+```{r}
+data <- matrix(rexp(40*1000,0.2),1000,40)
+str(data)
+dim(data)
+
+meanData <- apply(data, 1, FUN = mean)
+hist(meanData,breaks = 20)  
+```
+
+Comparing the sample mean to the theoretical mean
+```{r}
+sampleMean <- mean(meanData)
+theoreticalMean <- 1/0.2
+cbind(sampleMean,theoreticalMean)
+```
+Comparing the sample variance to the theoretical variance
+```{r}
+sampleVar <- var(meanData)
+theoreticalVar <- (5^2)/40
+cbind(sampleVar,theoreticalVar)
+```
+
+The Central Limit Theorem states that the sampling distribution of the sample means approaches a normal distribution 
+```{r}
+hist(meanData,breaks = 20,freq = FALSE) 
+lines(density(meanData))
+```
+
+As we can see the historgram is approximately normally distributed at the mean ``5``  
+
